@@ -1,0 +1,18 @@
+@model Locatic.Models.Voiture
+
+<h1>Détails de la voiture</h1>
+
+<div>
+    <strong>Immatriculation :</strong> @Model.Immatriculation<br />
+    <strong>Année :</strong> @Model.Annee<br />
+    <strong>Tarif journalier :</strong> @Model.TarifJournalier.ToString("0.00")<br />
+    <strong>Nombre de places :</strong> @Model.NombrePlaces<br />
+    <strong>Carburant :</strong> @Model.Carburant<br />
+    <strong>Modèle :</strong> @Model.Modele?.Nom<br />
+    <strong>Marque :</strong> @Model.Modele?.Marque?.Nom<br />
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a> |
+    <a asp-action="Index">Retour à la liste</a>
+</p>

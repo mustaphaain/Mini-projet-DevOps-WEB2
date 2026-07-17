@@ -1,0 +1,16 @@
+@model Locatic.Models.Voiture
+
+<h1>Supprimer une voiture</h1>
+
+<div>
+    <p>Voulez-vous vraiment supprimer cette voiture ?</p>
+    <strong>Immatriculation :</strong> @Model.Immatriculation<br />
+    <strong>Modèle :</strong> @Model.Modele?.Nom<br />
+    <strong>Marque :</strong> @Model.Modele?.Marque?.Nom<br />
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Supprimer</button>
+    <a asp-action="Index">Annuler</a>
+</form>

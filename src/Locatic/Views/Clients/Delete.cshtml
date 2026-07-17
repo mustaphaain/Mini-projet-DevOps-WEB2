@@ -1,0 +1,16 @@
+@model Locatic.Models.Client
+
+<h1>Supprimer un client</h1>
+
+<div>
+    <p>Voulez-vous vraiment supprimer ce client ?</p>
+    <strong>Nom :</strong> @Model.Nom<br />
+    <strong>Prénom :</strong> @Model.Prenom<br />
+    <strong>Email :</strong> @Model.Email<br />
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Supprimer</button>
+    <a asp-action="Index">Annuler</a>
+</form>

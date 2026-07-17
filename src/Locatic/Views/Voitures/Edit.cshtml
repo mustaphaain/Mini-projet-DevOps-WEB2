@@ -1,0 +1,49 @@
+@model Locatic.Models.Voiture
+
+<h1>Modifier une voiture</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div asp-validation-summary="ModelOnly" class="validation-summary-valid"></div>
+
+    <label>Immatriculation</label>
+    <input asp-for="Immatriculation" />
+    <span asp-validation-for="Immatriculation"></span>
+
+    <br><br>
+
+    <label>Année</label>
+    <input asp-for="Annee" />
+    <span asp-validation-for="Annee"></span>
+
+    <br><br>
+
+    <label>Tarif Journalier</label>
+    <input asp-for="TarifJournalier" />
+    <span asp-validation-for="TarifJournalier"></span>
+
+    <br><br>
+
+    <label>Nombre Places</label>
+    <input asp-for="NombrePlaces" />
+    <span asp-validation-for="NombrePlaces"></span>
+
+    <br><br>
+
+    <label>Carburant</label>
+    <input asp-for="Carburant" />
+    <span asp-validation-for="Carburant"></span>
+
+    <br><br>
+
+    <label>Modèle</label>
+    <select asp-for="ModeleId" asp-items="ViewBag.Modeles"></select>
+    <span asp-validation-for="ModeleId"></span>
+
+    <br><br>
+
+    <button type="submit">Enregistrer</button>
+</form>
+
+<p><a asp-action="Index">Annuler</a></p>

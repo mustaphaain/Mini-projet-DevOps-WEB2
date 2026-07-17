@@ -1,0 +1,33 @@
+@model Locatic.Models.Client
+
+<h1>Ajouter client</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="validation-summary-valid"></div>
+
+    <label>Nom</label>
+    <input asp-for="Nom" />
+    <span asp-validation-for="Nom"></span>
+
+    <br><br>
+
+    <label>Prénom</label>
+    <input asp-for="Prenom" />
+    <span asp-validation-for="Prenom"></span>
+
+    <br><br>
+
+    <label>Email</label>
+    <input asp-for="Email" />
+    <span asp-validation-for="Email"></span>
+
+    <br><br>
+
+    <label>Téléphone</label>
+    <input asp-for="Telephone" />
+    <span asp-validation-for="Telephone"></span>
+
+    <br><br>
+
+    <button type="submit">Enregistrer</button>
+</form>
