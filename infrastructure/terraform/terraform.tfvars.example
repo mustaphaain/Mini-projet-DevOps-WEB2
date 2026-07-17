@@ -1,0 +1,7 @@
+namespace        = "locatic"
+pvc_name         = "locatic-sqlite-pvc"
+storage_size     = "1Gi"
+storage_class_name = "standard"
+kube_context     = "minikube"
+docker_image     = "ghcr.io/<owner>/locatic:latest"
+app_replicas     = 1

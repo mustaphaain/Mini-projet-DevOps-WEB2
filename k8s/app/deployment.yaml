@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locatic-app
+  labels:
+    app: locatic
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locatic
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: locatic
+        tier: backend
+    spec:
+      containers:
+        - name: locatic
+          image: ghcr.io/owner/locatic:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: locatic-app-config
+          volumeMounts:
+            - name: sqlite-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: sqlite-data
+          persistentVolumeClaim:
+            claimName: locatic-sqlite-pvc

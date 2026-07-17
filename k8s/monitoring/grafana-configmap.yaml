@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  labels:
+    app: grafana
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        editable: false
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-config
+  labels:
+    app: grafana
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: locatic
+        orgId: 1
+        folder: Locatic
+        type: file
+        disableDeletion: false
+        options:
+          path: /var/lib/grafana/dashboards
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-locatic
+  labels:
+    app: grafana
+data:
+  locatic-overview.json: |
+    {
+      "title": "Locatic - Vue d'ensemble",
+      "uid": "locatic-overview",
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "10s",
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Application Locatic",
+          "gridPos": {"h": 4, "w": 8, "x": 0, "y": 0},
+          "targets": [{"expr": "up{job=\"locatic-app\"}", "legendFormat": "up"}]
+        },
+        {
+          "type": "stat",
+          "title": "Nginx",
+          "gridPos": {"h": 4, "w": 8, "x": 8, "y": 0},
+          "targets": [{"expr": "up{job=\"nginx\"}", "legendFormat": "up"}]
+        },
+        {
+          "type": "stat",
+          "title": "Prometheus",
+          "gridPos": {"h": 4, "w": 8, "x": 16, "y": 0},
+          "targets": [{"expr": "up{job=\"prometheus\"}", "legendFormat": "up"}]
+        },
+        {
+          "type": "timeseries",
+          "title": "Requêtes HTTP (Locatic)",
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 4},
+          "targets": [
+            {"expr": "rate(http_requests_received_total{job=\"locatic-app\"}[5m])", "legendFormat": "req/s"}
+          ]
+        }
+      ]
+    }

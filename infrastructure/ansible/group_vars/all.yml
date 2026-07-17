@@ -1,0 +1,9 @@
+project_root: "{{ playbook_dir | dirname | dirname | dirname }}"
+k8s_manifests_dir: "{{ project_root }}/k8s"
+terraform_dir: "{{ project_root }}/infrastructure/terraform"
+
+namespace: "{{ lookup('env', 'LOCATIC_NAMESPACE') | default('locatic', true) }}"
+docker_image: "{{ lookup('env', 'LOCATIC_IMAGE') | default('ghcr.io/owner/locatic:latest', true) }}"
+app_replicas: "{{ lookup('env', 'LOCATIC_REPLICAS') | default('1', true) }}"
+pvc_name: "{{ lookup('env', 'LOCATIC_PVC') | default('locatic-sqlite-pvc', true) }}"
+sqlite_mount_path: "/data"
