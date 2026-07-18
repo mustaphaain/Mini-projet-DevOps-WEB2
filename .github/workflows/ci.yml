@@ -2,9 +2,9 @@ name: CI/CD
 
 on:
   pull_request:
-    branches: [main]
+    branches: [feature/initial-devops-setup]
   push:
-    branches: [main]
+    branches: [feature/initial-devops-setup]
 
 env:
   DOTNET_VERSION: "9.0.x"
