@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Locatic.Models;
+using Xunit;
 
 namespace Locatic.Tests;
 
