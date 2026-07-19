@@ -3,19 +3,38 @@
   hosts: localhost
   gather_facts: false
 
+  vars:
+   project_root: "/mnt/c/Users/HP.COM/Desktop/Mini-projet-DevOps-WEB2-feature-initial-devops-setup"
+
+   k8s_manifests_dir: "{{ project_root }}/k8s"
+   terraform_dir: "{{ project_root }}/infrastructure/terraform"
+
+   namespace: "locatic"
+   docker_image: "ghcr.io/owner/locatic:latest"
+   app_replicas: "1"
+   pvc_name: "locatic-sqlite-pvc"
+
+   minikube_cmd: minikube.exe
+   kubectl_cmd: kubectl
+   terraform_cmd: /mnt/c/Tools/Terraform/terraform.exe
+
   tasks:
-    - name: Vérifier que minikube est disponible
-      ansible.builtin.command: minikube status
+    - name: Vérifier que Minikube est disponible
+      ansible.builtin.command: "{{ minikube_cmd }} status"
       register: minikube_status
       changed_when: false
       failed_when: minikube_status.rc != 0
 
     - name: Vérifier que kubectl est disponible
-      ansible.builtin.command: kubectl version --client
+      ansible.builtin.command: "{{ kubectl_cmd }} version --client"
+      changed_when: false
+
+    - name: Vérifier que Terraform est disponible
+      ansible.builtin.command: "{{ terraform_cmd }} version"
       changed_when: false
 
     - name: Lire les outputs Terraform
-      ansible.builtin.command: terraform output -json
+      ansible.builtin.command: "{{ terraform_cmd }} output -json"
       args:
         chdir: "{{ terraform_dir }}"
       register: terraform_outputs
@@ -27,7 +46,8 @@
 
     - name: Appliquer les manifests Kubernetes
       ansible.builtin.command: >
-        kubectl apply -f {{ k8s_manifests_dir }}/{{ item }}
+        {{ kubectl_cmd }} apply
+        -f {{ k8s_manifests_dir }}/{{ item }}
         --namespace {{ tf.namespace.value | default(namespace) }}
       loop:
         - app/configmap.yaml
@@ -50,7 +70,7 @@
 
     - name: Mettre à jour l'image de l'application
       ansible.builtin.command: >
-        kubectl set image deployment/locatic-app
+        {{ kubectl_cmd }} set image deployment/locatic-app
         locatic={{ tf.docker_image.value | default(docker_image) }}
         -n {{ tf.namespace.value | default(namespace) }}
       register: set_image
@@ -58,26 +78,29 @@
 
     - name: Attendre le déploiement de l'application
       ansible.builtin.command: >
-        kubectl rollout status deployment/locatic-app
+        {{ kubectl_cmd }} rollout status deployment/locatic-app
         -n {{ tf.namespace.value | default(namespace) }}
         --timeout=180s
       changed_when: false
 
     - name: Attendre le déploiement de Nginx
       ansible.builtin.command: >
-        kubectl rollout status deployment/locatic-nginx
+        {{ kubectl_cmd }} rollout status deployment/locatic-nginx
         -n {{ tf.namespace.value | default(namespace) }}
         --timeout=120s
       changed_when: false
 
-    - name: Afficher l'URL d'accès minikube
-      ansible.builtin.command: minikube service locatic-nginx -n {{ tf.namespace.value | default(namespace) }} --url
+    - name: Afficher l'URL du service
+      ansible.builtin.command: >
+        {{ minikube_cmd }} service locatic-nginx
+        -n {{ tf.namespace.value | default(namespace) }}
+        --url
       register: service_url
       changed_when: false
 
     - name: Résumé du déploiement
       ansible.builtin.debug:
         msg:
-          - "Namespace: {{ tf.namespace.value | default(namespace) }}"
-          - "Image: {{ tf.docker_image.value | default(docker_image) }}"
-          - "URL Nginx: {{ service_url.stdout_lines | join(', ') }}"
+          - "Namespace : {{ tf.namespace.value | default(namespace) }}"
+          - "Image : {{ tf.docker_image.value | default(docker_image) }}"
+          - "URL Nginx : {{ service_url.stdout_lines | join(', ') }}"
