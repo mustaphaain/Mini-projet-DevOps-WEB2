@@ -2,9 +2,12 @@ name: CI/CD
 
 on:
   pull_request:
-    branches: [feature/initial-devops-setup]
+    branches:
+      - feature/initial-devops-setup
+
   push:
-    branches: [feature/initial-devops-setup]
+    branches:
+      - feature/initial-devops-setup
 
 env:
   DOTNET_VERSION: "9.0.x"
@@ -108,7 +111,7 @@ jobs:
         continue-on-error: true
         uses: gitleaks/gitleaks-action@v2
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     name: Publication registry
